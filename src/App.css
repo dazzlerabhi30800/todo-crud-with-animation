@@ -1,0 +1,35 @@
+.App {
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background: none;
+}
+
+.background-changer {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-image: url("/public/dark.jpg");
+  background-position: center;
+  background-size: cover;
+  z-index: -1;
+}
+
+body.light .background-changer {
+  background-image: url("/public/light.jpg");
+}
+
+.background-changer[data-status="active"] {
+  transform: translateY(0%);
+  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.background-changer[data-status="shift"] {
+  transform: translateX(-100%) scaleX(0);
+  transition: none;
+}
+
+.background-changer[data-status="unshift"] {
+  transform: translateX(100%) scaleX(0);
+  transition: none;
+}
