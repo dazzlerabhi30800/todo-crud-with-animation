@@ -1,21 +1,43 @@
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { faSquareCheck } from "@fortawesome/free-regular-svg-icons";
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import Todo from "./Todo";
+import { nanoid } from "nanoid";
 
-const TodoList = () => {
-  const checkDisability = () => {
-    console.log("disabled");
+const TodoList = ({ todos, setTodos }) => {
+  const [inputValue, setInputValue] = useState("");
+
+  const createTodo = () => {
+    setTodos([
+      ...todos,
+      {
+        value: inputValue,
+        id: nanoid(),
+        completed: false,
+        edit: false,
+      },
+    ]);
+    setInputValue("");
   };
   return (
     <div className="todo-list-wrapper">
       <div className="submit-container">
-        <input type="text" id="todo-text" />
-        <FontAwesomeIcon className="submit-btn" icon={faCheck} />
+        <input
+          onChange={(e) => setInputValue(e.target.value)}
+          value={inputValue}
+          type="text"
+          id="todo-text"
+        />
+        <button onClick={createTodo} className="submit-btn">
+          <FontAwesomeIcon icon={faCheck} />
+        </button>
       </div>
       <div className="todo-list">
-        <Todo />
+        {todos.map((todo, index) => {
+          return (
+            <Todo setTodos={setTodos} todos={todos} todo={todo} key={index} />
+          );
+        })}
       </div>
     </div>
   );
