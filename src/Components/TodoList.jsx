@@ -8,15 +8,20 @@ const TodoList = ({ todos, setTodos }) => {
   const [inputValue, setInputValue] = useState("");
 
   const createTodo = () => {
-    setTodos([
-      ...todos,
-      {
-        value: inputValue,
-        id: nanoid(),
-        completed: false,
-        edit: false,
-      },
-    ]);
+    if (inputValue) {
+      setTodos([
+        ...todos,
+        {
+          value: inputValue,
+          id: nanoid(),
+          completed: false,
+          edit: false,
+        },
+      ]);
+    } else {
+      alert("Please input Value");
+      return;
+    }
     setInputValue("");
   };
   return (
