@@ -30,22 +30,36 @@ const Todo = ({ todo, setTodos, todos }) => {
   };
   const handleEdit = (id) => {
     const todoDiv = document.getElementById(id);
-    setTodos(
-      todos.map((item) => {
-        if (item.id === id) {
-          return {
-            ...item,
-            edit: !item.edit,
-            completed: item.completed ? false : item.completed,
-          };
-        }
-        return item;
-      })
-    );
     todoDiv.contentEditable = true;
+    if (todoDiv.contentEditable) {
+      setTodos(
+        todos.map((item) => {
+          if (item.id === id) {
+            return {
+              ...item,
+              edit: !item.edit,
+              completed: item.completed ? false : item.completed,
+            };
+          }
+          return item;
+        })
+      );
+    }
     todoDiv.focus();
-    document.execCommand("selectAll", false, null);
-    document.getSelection().collapseToEnd();
+    // document.execCommand("selectAll", false, null);
+    // window.getSelection().collapseToEnd();
+    var range = document.createRange();
+    range.selectNode(todoDiv.firstChild);
+    todos.map((item) => {
+      if (!item.edit) {
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+        console.log("hello");
+      } else {
+        window.getSelection().removeAllRanges();
+        console.log("bye");
+      }
+    });
   };
   const completeEdit = (id) => {
     const editDiv = document.getElementById(id);
@@ -63,9 +77,19 @@ const Todo = ({ todo, setTodos, todos }) => {
       })
     );
     editDiv.contentEditable = false;
+    window.getSelection().removeAllRanges();
+  };
+  const handleDrag = (e) => {
+    const currentElement = e.target;
+    const offsetTop = currentElement.offsetTop;
+    currentElement.style.transform = `translateY(${e.clientY}px)`;
   };
   return (
-    <div className={`todo ${todo.completed ? "completed" : ""}`}>
+    <div
+      onDrag={handleDrag}
+      draggable={true}
+      className={`todo ${todo.completed ? "completed" : ""}`}
+    >
       <div
         className={`task-completion ${todo.completed ? "completed" : ""}`}
         onClick={() => handleCompleted(todo.id)}
