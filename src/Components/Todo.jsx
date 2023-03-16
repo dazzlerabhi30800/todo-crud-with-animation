@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { faSquareCheck } from "@fortawesome/free-regular-svg-icons";
 
 const Todo = ({ todo, setTodos, todos }) => {
+  const [checkComplete, setCheckComplete] = useState(false);
   const handleCompleted = (id) => {
     if (todo.id === id) {
       setTodos(
@@ -34,6 +35,9 @@ const Todo = ({ todo, setTodos, todos }) => {
     if (todoDiv.contentEditable) {
       setTodos(
         todos.map((item) => {
+          if (item.completed) {
+            setCheckComplete((prevState) => (prevState = true));
+          }
           if (item.id === id) {
             return {
               ...item,
@@ -54,10 +58,8 @@ const Todo = ({ todo, setTodos, todos }) => {
       if (!item.edit) {
         window.getSelection().removeAllRanges();
         window.getSelection().addRange(range);
-        console.log("hello");
       } else {
         window.getSelection().removeAllRanges();
-        console.log("bye");
       }
     });
   };
@@ -71,6 +73,7 @@ const Todo = ({ todo, setTodos, todos }) => {
             ...item,
             value: editValue,
             edit: !item.edit,
+            completed: checkComplete ? true : item.completed,
           };
         }
         return item;
@@ -78,15 +81,11 @@ const Todo = ({ todo, setTodos, todos }) => {
     );
     editDiv.contentEditable = false;
     window.getSelection().removeAllRanges();
+    setCheckComplete((prevState) => (prevState = false));
   };
-  const handleDrag = (e) => {
-    const currentElement = e.target;
-    const offsetTop = currentElement.offsetTop;
-    currentElement.style.transform = `translateY(${e.clientY}px)`;
-  };
+
   return (
     <div
-      onDrag={handleDrag}
       draggable={true}
       className={`todo ${todo.completed ? "completed" : ""}`}
     >
@@ -96,7 +95,11 @@ const Todo = ({ todo, setTodos, todos }) => {
       >
         <div className="mini-circle"></div>
       </div>
-      <div id={todo.id} contentEditable={false} className="todo-value">
+      <div
+        id={todo.id}
+        contentEditable={false}
+        className={`todo-value ${todo.edit ? "focus" : ""}`}
+      >
         {todo.value}
       </div>
       <div className="icon-wrapper">
