@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { faSquareCheck } from "@fortawesome/free-regular-svg-icons";
@@ -87,6 +87,10 @@ const Todo = ({ todo, setTodos, todos }) => {
   return (
     <div
       draggable={true}
+      // onDragStart={dragStart}
+      // onTouchStart={dragStart}
+      // onDragEnd={dragEnd}
+      // onTouchEnd={dragEnd}
       className={`todo ${todo.completed ? "completed" : ""}`}
     >
       <div
