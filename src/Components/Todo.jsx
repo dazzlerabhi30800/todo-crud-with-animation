@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { faSquareCheck } from "@fortawesome/free-regular-svg-icons";
+import { Draggable } from "react-beautiful-dnd";
 
-const Todo = ({ todo, setTodos, todos }) => {
+const Todo = ({ todo, setTodos, todos, index }) => {
   const [checkComplete, setCheckComplete] = useState(false);
   const handleCompleted = (id) => {
     if (todo.id === id) {
@@ -85,43 +86,47 @@ const Todo = ({ todo, setTodos, todos }) => {
   };
 
   return (
-    <div
-      draggable={true}
-      // onDragStart={dragStart}
-      // onTouchStart={dragStart}
-      // onDragEnd={dragEnd}
-      // onTouchEnd={dragEnd}
-      className={`todo ${todo.completed ? "completed" : ""}`}
-    >
-      <div
-        className={`task-completion ${todo.completed ? "completed" : ""}`}
-        onClick={() => handleCompleted(todo.id)}
-      >
-        <div className="mini-circle"></div>
-      </div>
-      <div
-        id={todo.id}
-        contentEditable={false}
-        className={`todo-value ${todo.edit ? "focus" : ""}`}
-      >
-        {todo.value}
-      </div>
-      <div className="icon-wrapper">
-        <button
-          onClick={() => completeEdit(todo.id)}
-          disabled={todo.edit ? false : true}
-          className="btn confirm"
+    <Draggable draggableId={todo.id.toString()} index={index}>
+      {(provided, snapshot) => (
+        <div
+          className={`todo ${todo.completed ? "completed" : ""} ${
+            snapshot.isDragging ? "drag" : ""
+          }`}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          ref={provided.innerRef}
         >
-          <FontAwesomeIcon icon={faSquareCheck} />
-        </button>
-        <button onClick={() => handleEdit(todo.id)} className="btn edit">
-          <FontAwesomeIcon icon={faEdit} />
-        </button>
-        <button className="btn trash" onClick={() => handleDelete(todo.id)}>
-          <FontAwesomeIcon icon={faTrash} />
-        </button>
-      </div>
-    </div>
+          <div
+            className={`task-completion ${todo.completed ? "completed" : ""}`}
+            onClick={() => handleCompleted(todo.id)}
+          >
+            <div className="mini-circle"></div>
+          </div>
+          <div
+            id={todo.id}
+            contentEditable={false}
+            className={`todo-value ${todo.edit ? "focus" : ""}`}
+          >
+            {todo.value}
+          </div>
+          <div className="icon-wrapper">
+            <button
+              onClick={() => completeEdit(todo.id)}
+              disabled={todo.edit ? false : true}
+              className="btn confirm"
+            >
+              <FontAwesomeIcon icon={faSquareCheck} />
+            </button>
+            <button onClick={() => handleEdit(todo.id)} className="btn edit">
+              <FontAwesomeIcon icon={faEdit} />
+            </button>
+            <button className="btn trash" onClick={() => handleDelete(todo.id)}>
+              <FontAwesomeIcon icon={faTrash} />
+            </button>
+          </div>
+        </div>
+      )}
+    </Draggable>
   );
 };
 
